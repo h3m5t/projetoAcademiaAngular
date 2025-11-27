@@ -1,0 +1,24 @@
+<div class="container mt-4">
+  <div class="mb-3">
+    <button class="btn btn-primary">Adicionar Cliente</button>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col" class="text-white bg-primary">Nome</th>
+        <th scope="col" class="text-white bg-primary" style="width: 300px;">Funções</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cliente of clientes">
+        <td class="align-middle bg-light">{{ cliente.nome }}</td>
+        <td class="bg-light">
+          <button class="btn btn-outline-secondary btn-sm me-2">Editar</button>
+          <button class="btn btn-danger btn-sm me-2">Excluir</button>
+          <button class="btn btn-primary btn-sm">Sobre</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,26 @@
+<div class="container mt-4">
+  <div class="mb-3">
+    <button class="btn btn-primary">Adicionar Pagamento</button>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col" class="text-white bg-primary">Nome dos Pagantes</th>
+        <th scope="col" class="text-white bg-primary" style="width: 150px;">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pag of pagamentos">
+        <td class="align-middle bg-light">
+          {{ pag.nome }} 
+          <span class="badge rounded-pill bg-success ms-2" *ngIf="pag.status === 'Pago'">Pago</span>
+          <span class="badge rounded-pill bg-warning text-dark ms-2" *ngIf="pag.status === 'Pendente'">Pendente</span>
+        </td>
+        <td class="bg-light text-center">
+          <button class="btn btn-primary btn-sm">Detalhes</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
