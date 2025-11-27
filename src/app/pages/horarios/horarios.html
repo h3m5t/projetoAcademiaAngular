@@ -1,1 +1,27 @@
-<p>horarios works!</p>
+<div class="container mt-4">
+  
+  <div class="accordion mb-3" id="accordionHorarios">
+    
+    <div class="accordion-item mb-2 border-0" *ngFor="let item of horarios; let i = index">
+      <h2 class="accordion-header" [id]="'heading' + i">
+        <button class="accordion-button collapsed bg-primary text-white bg-opacity-25" type="button" 
+                data-bs-toggle="collapse" 
+                [attr.data-bs-target]="'#collapse' + i" 
+                aria-expanded="false" 
+                [attr.aria-controls]="'collapse' + i">
+          {{ item.nome }}
+        </button>
+      </h2>
+      <div [id]="'collapse' + i" class="accordion-collapse collapse" 
+           [attr.aria-labelledby]="'heading' + i" 
+           data-bs-parent="#accordionHorarios">
+        <div class="accordion-body bg-light">
+          <strong>Horário:</strong> {{ item.desc }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="btn btn-primary">Adicionar Horário</button>
+</div>
