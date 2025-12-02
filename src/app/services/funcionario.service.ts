@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FuncionarioService {
-  
- // Aqui você coloca o endereço do seu backend (Node.js)
+
+  // Aqui você coloca o endereço do seu backend (Node.js)
   // Como você ainda vai configurar o backend para JSON, vamos deixar apontado:
-private apiUrl = 'http://localhost:3000/funcionario/listar';
+  private apiUrl = 'http://localhost:3000/funcionario/listar';
 
   constructor(private http: HttpClient) { }
 
@@ -19,9 +19,18 @@ private apiUrl = 'http://localhost:3000/funcionario/listar';
   }
 
   // Adicione esse método dentro da classe do Service
-adicionarFuncionario(funcionario: any): Observable<any> {
-  // Ajuste a URL se a sua rota for diferente de /funcionario/add
-  return this.http.post('http://localhost:3000/funcionario/add', funcionario);
-}
+  adicionarFuncionario(funcionario: any): Observable<any> {
+    // Ajuste a URL se a sua rota for diferente de /funcionario/add
+    return this.http.post('http://localhost:3000/funcionario/add', funcionario);
+  }
+
+  // Adicione dentro da classe do Service
+  excluirFuncionario(matricula: number): Observable<any> {
+    return this.http.delete(`http://localhost:3000/funcionario/apagar/${matricula}`);
+  }
+
+  editarFuncionario(matricula: number, dados: any): Observable<any> {
+    return this.http.put(`http://localhost:3000/funcionario/editar/${matricula}`, dados);
+  }
 
 }

@@ -1,8 +1,8 @@
 <div class="container mt-4">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFuncionario">
-      Adicionar Funcionário
+    <button class="btn btn-light text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalFuncionario"
+      (click)="prepararCadastro()"> + Adicionar Novo
     </button>
   </div>
 
@@ -16,17 +16,19 @@
     <tbody>
       <tr *ngFor="let item of funcionarios">
         <td class="align-middle">{{ item.Nome }}</td>
-      
-        
+
+
         <td class="text-center">
           <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-secondary btn-sm">Editar</button>
-            <button type="button" class="btn btn-danger btn-sm">Excluir</button>
-            
-            <button type="button" class="btn btn-primary btn-sm" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalSobre"
-                    (click)="verDetalhes(item)">
+            <button type="button" class="btn btn-outline-secondary btn-sm" title="Editar" data-bs-toggle="modal"
+              data-bs-target="#modalFuncionario" (click)="prepararEdicao(item)"> Editar
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" (click)="apagar(item)">
+              Excluir
+            </button>
+
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSobre"
+              (click)="verDetalhes(item)">
               Sobre
             </button>
           </div>
