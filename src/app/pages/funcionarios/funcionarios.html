@@ -1,50 +1,56 @@
 <div class="container mt-4">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-light text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalFuncionario"
-      (click)="prepararCadastro()"> + Adicionar Novo
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFuncionario" (click)="prepararCadastro()">
+      + Adicionar Funcionário
     </button>
   </div>
 
-  <table class="table table-hover table-bordered">
-    <thead class="table-primary">
-      <tr>
-        <th scope="col">Nome</th>
-        <th scope="col" class="text-center" style="width: 250px;">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of funcionarios">
-        <td class="align-middle">{{ item.Nome }}</td>
-
-
-        <td class="text-center">
-          <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-secondary btn-sm" title="Editar" data-bs-toggle="modal"
-              data-bs-target="#modalFuncionario" (click)="prepararEdicao(item)"> Editar
-            </button>
-            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" (click)="apagar(item)">
-              Excluir
-            </button>
-
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSobre"
-              (click)="verDetalhes(item)">
-              Sobre
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="card shadow-sm">
+    <table class="table table-hover table-bordered mb-0">
+      <thead class="table-primary">
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col" class="text-center" style="width: 250px;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of funcionarios">
+          <td class="align-middle">{{ item.Nome }}</td>
+          
+          <td class="text-center">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-secondary btn-sm" 
+                      data-bs-toggle="modal" data-bs-target="#modalFuncionario"
+                      (click)="prepararEdicao(item)">
+                Editar
+              </button>
+              
+              <button type="button" class="btn btn-outline-danger btn-sm" 
+                      (click)="apagar(item)">
+                Excluir
+              </button>
+              
+              <button type="button" class="btn btn-outline-primary btn-sm" 
+                      data-bs-toggle="modal" data-bs-target="#modalSobre"
+                      (click)="verDetalhes(item)">
+                Sobre
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
 </div>
 
 <div class="modal fade" id="modalFuncionario" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Novo Funcionário</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">{{ idEdicao ? 'Editar Funcionário' : 'Novo Funcionário' }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form>
@@ -81,15 +87,15 @@
 <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Detalhes do Funcionário</h5>
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Detalhes</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" *ngIf="funcionarioSelecionado">
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><strong>Nome:</strong> {{ funcionarioSelecionado.Nome }}</li>
-          <li class="list-group-item"><strong>Cargo:</strong> {{ funcionarioSelecionado.Cargo }}</li>
           <li class="list-group-item"><strong>CPF:</strong> {{ funcionarioSelecionado.Cpf }}</li>
+          <li class="list-group-item"><strong>Cargo:</strong> {{ funcionarioSelecionado.Cargo }}</li>
           <li class="list-group-item"><strong>Telefone:</strong> {{ funcionarioSelecionado.contato }}</li>
           <li class="list-group-item"><strong>Aniversário:</strong> {{ funcionarioSelecionado.Aniversario }}</li>
           <li class="list-group-item"><strong>Salário:</strong> R$ {{ funcionarioSelecionado.Salario }}</li>
