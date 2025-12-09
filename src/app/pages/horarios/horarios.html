@@ -1,27 +1,85 @@
-<div class="container mt-4">
+<div class="container mt-5">
   
-  <div class="accordion mb-3" id="accordionHorarios">
-    
-    <div class="accordion-item mb-2 border-0" *ngFor="let item of horarios; let i = index">
-      <h2 class="accordion-header" [id]="'heading' + i">
-        <button class="accordion-button collapsed bg-primary text-white bg-opacity-25" type="button" 
-                data-bs-toggle="collapse" 
-                [attr.data-bs-target]="'#collapse' + i" 
-                aria-expanded="false" 
-                [attr.aria-controls]="'collapse' + i">
-          {{ item.nome }}
-        </button>
-      </h2>
-      <div [id]="'collapse' + i" class="accordion-collapse collapse" 
-           [attr.aria-labelledby]="'heading' + i" 
-           data-bs-parent="#accordionHorarios">
-        <div class="accordion-body bg-light">
-          <strong>Horário:</strong> {{ item.desc }}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary fw-bold">Escala de Horários</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalHorario">
+      + Novo Horário
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let item of listaHorarios">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-header bg-dark text-white text-center">
+          <h5 class="mb-0">{{ item.nome }}</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between" *ngFor="let turno of item.turnos">
+              <span class="fw-bold text-secondary">{{ turno.dia }}</span>
+              <span class="badge bg-light text-dark border">
+                {{ turno.inicio }} - {{ turno.fim }}
+              </span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-
   </div>
 
-  <button class="btn btn-primary">Adicionar Horário</button>
+  <div *ngIf="listaHorarios.length === 0" class="alert alert-info text-center">
+    Nenhum horário cadastrado.
+  </div>
+
+</div>
+
+<div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Adicionar Turno</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Funcionário</label>
+            <select class="form-select" [(ngModel)]="novoHorario.mat" name="func">
+              <option value="" disabled selected>Selecione...</option>
+              <option *ngFor="let f of listaFuncionarios" [value]="f.mat_funcionario">
+                {{ f.nome_func }}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Dia da Semana</label>
+            <select class="form-select" [(ngModel)]="novoHorario.dia" name="dia">
+              <option value="Segunda-feira">Segunda-feira</option>
+              <option value="Terça-feira">Terça-feira</option>
+              <option value="Quarta-feira">Quarta-feira</option>
+              <option value="Quinta-feira">Quinta-feira</option>
+              <option value="Sexta-feira">Sexta-feira</option>
+              <option value="Sábado">Sábado</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label fw-bold">Entrada</label>
+              <input type="time" class="form-control" [(ngModel)]="novoHorario.inicio" name="ini">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label fw-bold">Saída</label>
+              <input type="time" class="form-control" [(ngModel)]="novoHorario.fim" name="fim">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
 </div>

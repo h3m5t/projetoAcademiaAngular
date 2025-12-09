@@ -1,26 +1,138 @@
-<div class="container mt-4">
-  <div class="mb-3">
-    <button class="btn btn-primary">Adicionar Pagamento</button>
-  </div>
+<div class="container mt-5">
+  <div class="card shadow-lg border-0">
+    
+    <div class="card-header bg-primary text-white p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">
+          <i class="bi bi-cash-coin me-2"></i> Gestão de Pagamentos
+        </h5>
+        
+        <div class="input-group" style="width: 300px;">
+          <input type="text" class="form-control form-control-sm" placeholder="Pesquisar Pagante..." [(ngModel)]="termoBusca" (input)="filtrar()">
+          <span class="input-group-text bg-white text-primary"><i class="bi bi-search"></i></span>
+        </div>
+      </div>
+    </div>
 
-  <table class="table table-bordered">
-    <thead>
-      <tr class="table-primary">
-        <th scope="col" class="text-white bg-primary">Nome dos Pagantes</th>
-        <th scope="col" class="text-white bg-primary" style="width: 150px;">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let pag of pagamentos">
-        <td class="align-middle bg-light">
-          {{ pag.nome }} 
-          <span class="badge rounded-pill bg-success ms-2" *ngIf="pag.status === 'Pago'">Pago</span>
-          <span class="badge rounded-pill bg-warning text-dark ms-2" *ngIf="pag.status === 'Pendente'">Pendente</span>
-        </td>
-        <td class="bg-light text-center">
-          <button class="btn btn-primary btn-sm">Detalhes</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-4">Nome do Pagante</th>
+              <th scope="col" class="text-center" style="width: 250px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="pagantes.length === 0">
+              <td colspan="2" class="text-center py-4 text-muted">Nenhum pagante encontrado.</td>
+            </tr>
+
+            <tr *ngFor="let item of pagantes">
+              <td class="ps-4 fw-bold text-secondary">{{ item.nome }}</td>
+              <td class="text-center">
+                <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalAdd" (click)="prepararNovoPagamento(item)" title="Pagar">
+                  <i class="bi bi-currency-dollar"></i> Pagar
+                </button>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalHistorico" (click)="verHistorico(item)">
+                  Ver Detalhes
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAdd" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Novo Pagamento {{ clienteSelecionado?.nome }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Valor (R$)</label>
+              <input type="number" class="form-control" [(ngModel)]="novoPagamento.valor" name="valor" placeholder="0,00">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small">Tipo do Plano</label>
+              <select class="form-select" [(ngModel)]="novoPagamento.plano" name="plano">
+                <option value="Mensal">Mensal</option>
+                <option value="Anual">Anual</option>
+                <option value="Diária">Diária</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Data do Pagamento</label>
+            <input type="date" class="form-control" [(ngModel)]="novoPagamento.data" name="data">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold small">Forma de Pagamento</label>
+            <select class="form-select" [(ngModel)]="novoPagamento.forma" name="forma">
+              <option value="Pix">Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Cartão">Cartão</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success px-4" (click)="salvarPagamento()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalHistorico" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Histórico: {{ clienteSelecionado?.nome }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body">
+        
+        <div *ngIf="historicoSelecionado.length === 0" class="alert alert-warning text-center">
+          <i class="bi bi-info-circle me-2"></i> Nenhum pagamento encontrado.
+        </div>
+
+        <div class="table-responsive" *ngIf="historicoSelecionado.length > 0">
+          <table class="table table-bordered table-hover text-center align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th> <th>Forma</th>
+                <th>Valor Pago</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pag of historicoSelecionado">
+                <td>{{ pag.data }}</td>
+                <td><span class="badge bg-info text-dark">{{ pag.plano }}</span></td>
+                <td>{{ pag.forma }}</td>
+                <td class="text-success fw-bold">R$ {{ pag.valor }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
 </div>

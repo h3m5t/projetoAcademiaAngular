@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ClienteService } from '../../services/cliente';
+import { ClienteService } from '../../services/cliente.service';
 
 @Component({
   selector: 'app-clientes',
@@ -7,11 +7,10 @@ import { ClienteService } from '../../services/cliente';
   templateUrl: './clientes.html',
   styleUrls: ['./clientes.css']
 })
-export class ClientesComponent implements OnInit {
+export class Clientes implements OnInit {
 
   clientes: any[] = [];
 
-  // Objeto do Formulário
   novoCliente = {
     nome: '',
     cpf: '',
@@ -19,8 +18,8 @@ export class ClientesComponent implements OnInit {
     nascimento: ''
   };
 
-  clienteSelecionado: any = null; // Para o Modal Sobre
-  idEdicao: number | null = null; // Para controlar Edição vs Criação
+  clienteSelecionado: any = null;
+  idEdicao: number | null = null;
 
   constructor(private clienteService: ClienteService) { }
 
@@ -31,21 +30,20 @@ export class ClientesComponent implements OnInit {
   carregarClientes() {
     this.clienteService.getClientes().subscribe(
       (dados) => { this.clientes = dados; },
-      (erro) => { console.error('Erro ao listar:', erro); }
+      (erro) => { console.error('Erro:', erro); }
     );
   }
 
-  // --- Lógica de Cadastro/Edição ---
-
   prepararCadastro() {
-    this.idEdicao = null; // Modo Criação
+    this.idEdicao = null;
     this.novoCliente = { nome: '', cpf: '', telefone: '', nascimento: '' };
   }
 
   prepararEdicao(item: any) {
-    this.idEdicao = item.Inscrição; // O ID vem como 'Inscrição' do banco
+    // ATENÇÃO: Agora usamos 'id' (minusculo e sem acento)
+    this.idEdicao = item.id; 
 
-    // Converter data de dd/mm/aaaa para aaaa-mm-dd (para o input date funcionar)
+    // Formatar data
     let dataFormatada = '';
     if (item.aniversario) {
       const partes = item.aniversario.split('/');
@@ -57,27 +55,26 @@ export class ClientesComponent implements OnInit {
     this.novoCliente = {
       nome: item.nome,
       cpf: item.cpf,
-      telefone: item.Contato, // O banco retorna 'Contato'
+      // ATENÇÃO: Agora usamos 'telefone' (que vem do backend novo)
+      telefone: item.telefone, 
       nascimento: dataFormatada
     };
   }
 
   salvar() {
     if (this.idEdicao) {
-      // EDITAR
       this.clienteService.editarCliente(this.idEdicao, this.novoCliente).subscribe(
         () => {
-          alert('Cliente atualizado!');
+          alert('Atualizado!');
           this.carregarClientes();
-          this.prepararCadastro(); // Limpa
+          this.prepararCadastro();
         },
         (erro) => alert('Erro ao editar.')
       );
     } else {
-      // ADICIONAR
       this.clienteService.adicionarCliente(this.novoCliente).subscribe(
         () => {
-          alert('Cliente salvo!');
+          alert('Salvo!');
           this.carregarClientes();
           this.prepararCadastro();
         },
@@ -86,13 +83,12 @@ export class ClientesComponent implements OnInit {
     }
   }
 
-  // --- Lógica de Excluir ---
-
   apagar(item: any) {
-    if (confirm(`Tem certeza que deseja excluir ${item.nome}?`)) {
-      this.clienteService.excluirCliente(item.Inscrição).subscribe(
+    if (confirm(`Excluir ${item.nome}?`)) {
+      // ATENÇÃO: Usando 'id' aqui também
+      this.clienteService.excluirCliente(item.id).subscribe(
         () => {
-          alert('Excluído com sucesso!');
+          alert('Excluído!');
           this.carregarClientes();
         },
         (erro) => alert('Erro ao excluir.')
