@@ -1,14 +1,5 @@
 <div class="container mt-5">
 
-  <div *ngIf="msgSucesso" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-    <i class="bi bi-check-circle-fill me-2"></i> {{ msgSucesso }}
-    <button type="button" class="btn-close" (click)="msgSucesso=''"></button>
-  </div>
-
-  <div *ngIf="msgErro" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ msgErro }}
-    <button type="button" class="btn-close" (click)="msgErro=''"></button>
-  </div>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCliente" (click)="prepararCadastro()">
       <i class="bi bi-person-plus-fill me-2"></i> Novo Cliente
@@ -34,7 +25,7 @@
             <tr *ngFor="let item of clientes">
               <td class="ps-4 fw-bold text-secondary">{{ item.nome }}</td>
               
-              <td>{{ item.telefone }}</td>
+              <td>{{ item.telefone | mask: '(00) 00000-0000' }}</td>
               
               <td class="text-center">
                 <div class="btn-group" role="group">
@@ -45,6 +36,7 @@
                   </button>
                   
                   <button class="btn btn-outline-danger btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalConfirmacao"
                           (click)="apagar(item)">
                     <i class="bi bi-trash"></i> Excluir
                   </button>
@@ -79,14 +71,21 @@
             <label class="form-label fw-bold small text-muted">Nome</label>
             <input type="text" class="form-control" [(ngModel)]="novoCliente.nome" name="nome">
           </div>
+          
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">CPF</label>
-            <input type="text" class="form-control" [(ngModel)]="novoCliente.cpf" name="cpf">
+            <input type="text" class="form-control" 
+                   mask="000.000.000-00" placeholder="000.000.000-00"
+                   [(ngModel)]="novoCliente.cpf" name="cpf">
           </div>
+
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">Telefone</label>
-            <input type="text" class="form-control" [(ngModel)]="novoCliente.telefone" name="tel">
+            <input type="text" class="form-control" 
+                   mask="(00) 00000-0000" placeholder="(00) 00000-0000"
+                   [(ngModel)]="novoCliente.telefone" name="tel">
           </div>
+
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">Nascimento</label>
             <input type="date" class="form-control" [(ngModel)]="novoCliente.nascimento" name="nasc">
@@ -101,6 +100,51 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalConfirmacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <p class="fs-5">Tem certeza que deseja apagar o cliente:</p>
+        <h4 class="fw-bold text-danger">{{ itemParaExcluir?.nome }}</h4>
+        <p class="text-muted small mt-3">Essa ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer bg-light justify-content-center">
+        <button type="button" id="btnFecharConfirmacao" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger px-4" (click)="confirmarExclusao()">Sim, Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalMensagem" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center border-0 shadow-lg">
+      
+      <div class="modal-header justify-content-center text-white"
+           [ngClass]="{'bg-success': msgSucesso, 'bg-danger': msgErro}">
+        <h5 class="modal-title fw-bold">
+          <i class="bi" [ngClass]="{'bi-check-circle-fill': msgSucesso, 'bi-x-circle-fill': msgErro}"></i>
+          {{ msgSucesso ? 'Sucesso!' : 'Atenção!' }}
+        </h5>
+      </div>
+
+      <div class="modal-body p-4">
+        <h5 class="mb-0">{{ msgSucesso || msgErro }}</h5>
+      </div>
+
+      <div class="modal-footer justify-content-center bg-light">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="btnAbrirMensagem" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalMensagem"></button>
+
 <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
@@ -111,7 +155,7 @@
       <div class="modal-body" *ngIf="clienteSelecionado">
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex justify-content-between">
-            <span class="fw-bold text-muted">ID:</span> 
+            <span class="fw-bold text-muted">Matricula:</span> 
             <span class="badge bg-secondary">{{ clienteSelecionado.id }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
@@ -120,11 +164,11 @@
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span class="fw-bold text-muted">CPF:</span> 
-            <span>{{ clienteSelecionado.cpf }}</span>
+            <span>{{ clienteSelecionado.cpf | mask: '000.000.000-00' }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span class="fw-bold text-muted">Telefone:</span> 
-            <span>{{ clienteSelecionado.telefone }}</span>
+            <span>{{ clienteSelecionado.telefone | mask: '(00) 00000-0000' }}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span class="fw-bold text-muted">Aniversário:</span> 

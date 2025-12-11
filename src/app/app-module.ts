@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http'; 
 import { FormsModule } from '@angular/forms';
-
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing-module';
 import { AppComponent } from './app'; 
 
@@ -25,9 +25,15 @@ import { Horarios } from './pages/horarios/horarios';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    NgxMaskDirective, 
+    NgxMaskPipe
   ],
-  providers: [],
+  providers: [
+    // 3. ADICIONAR NO PROVIDERS:
+    provideNgxMask()
+  
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

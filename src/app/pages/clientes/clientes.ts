@@ -10,10 +10,13 @@ import { ClienteService } from '../../services/cliente.service';
 export class Clientes implements OnInit {
 
   clientes: any[] = [];
+  
+  // --- CONTROLES ---
   clienteSelecionado: any = null;
+  itemParaExcluir: any = null; 
   idEdicao: number | null = null;
 
-  // Variáveis de Mensagem (NOVO)
+  // --- MENSAGENS ---
   msgSucesso: string = '';
   msgErro: string = '';
 
@@ -35,12 +38,20 @@ export class Clientes implements OnInit {
     this.msgErro = '';
   }
 
+  // Abre o popup de feedback (Sucesso/Erro)
+  abrirModalMensagem() {
+    setTimeout(() => {
+      document.getElementById('btnAbrirMensagem')?.click();
+    }, 300);
+  }
+
   carregarClientes() {
     this.clienteService.getClientes().subscribe(
       (dados) => { this.clientes = dados; },
       (erro) => {
         console.error('Erro:', erro);
         this.msgErro = 'Erro ao carregar lista de clientes.';
+        this.abrirModalMensagem();
       }
     );
   }
@@ -75,38 +86,65 @@ export class Clientes implements OnInit {
     this.limparMensagens();
 
     if (this.idEdicao) {
+      // EDITAR
       this.clienteService.editarCliente(this.idEdicao, this.novoCliente).subscribe(
         () => {
           this.msgSucesso = 'Cliente atualizado com sucesso!';
           this.carregarClientes();
-          // FECHA O MODAL AUTOMATICAMENTE
+          
+          // Fecha formulário e abre feedback
           document.getElementById('btnFechar')?.click(); 
+          this.abrirModalMensagem();
         },
-        (erro) => this.msgErro = 'Erro ao atualizar cliente.'
+        (erro) => {
+          this.msgErro = 'Erro ao atualizar cliente.';
+          this.abrirModalMensagem();
+        }
       );
     } else {
+      // ADICIONAR
       this.clienteService.adicionarCliente(this.novoCliente).subscribe(
         () => {
           this.msgSucesso = 'Cliente cadastrado com sucesso!';
           this.carregarClientes();
-          this.prepararCadastro();
-          // FECHA O MODAL AUTOMATICAMENTE
+          
+          // Limpa form
+          this.novoCliente = { nome: '', cpf: '', telefone: '', nascimento: '' };
+          
+          // Fecha formulário e abre feedback
           document.getElementById('btnFechar')?.click(); 
+          this.abrirModalMensagem();
         },
-        (erro) => this.msgErro = 'Erro ao cadastrar cliente.'
+        (erro) => {
+          this.msgErro = 'Erro ao cadastrar cliente.';
+          this.abrirModalMensagem();
+        }
       );
     }
   }
 
   apagar(item: any) {
     this.limparMensagens();
-    if (confirm(`Tem certeza que deseja apagar ${item.nome}?`)) {
-      this.clienteService.excluirCliente(item.id).subscribe(
+    this.itemParaExcluir = item;
+    // O modal de confirmação abre via HTML
+  }
+
+  confirmarExclusao() {
+    if (this.itemParaExcluir) {
+      this.clienteService.excluirCliente(this.itemParaExcluir.id).subscribe(
         () => {
           this.msgSucesso = 'Cliente excluído com sucesso!';
           this.carregarClientes();
+          
+          // Fecha confirmação e abre feedback
+          document.getElementById('btnFecharConfirmacao')?.click();
+          this.abrirModalMensagem();
         },
-        (erro) => this.msgErro = 'Erro ao excluir cliente.'
+        (erro) => {
+          console.error(erro);
+          this.msgErro = 'Erro ao excluir cliente.';
+          this.abrirModalMensagem();
+        }
       );
     }
   }

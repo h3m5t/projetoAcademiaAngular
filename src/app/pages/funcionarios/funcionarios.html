@@ -1,108 +1,170 @@
-<div class="container mt-4">
+<div class="container mt-5">
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFuncionario" (click)="prepararCadastro()">
-      + Adicionar Funcionário
+    <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalFuncionario" (click)="prepararCadastro()">
+      <i class="bi bi-person-plus-fill me-2"></i> Novo Funcionário
     </button>
   </div>
 
-  <div class="card shadow-sm">
-    <table class="table table-hover table-bordered mb-0">
-      <thead class="table-primary">
-        <tr>
-          <th scope="col">Nome</th>
-          <th scope="col" class="text-center" style="width: 250px;">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of funcionarios">
-          <td class="align-middle">{{ item.Nome }}</td>
-          
-          <td class="text-center">
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-outline-secondary btn-sm" 
-                      data-bs-toggle="modal" data-bs-target="#modalFuncionario"
-                      (click)="prepararEdicao(item)">
-                Editar
-              </button>
-              
-              <button type="button" class="btn btn-outline-danger btn-sm" 
-                      (click)="apagar(item)">
-                Excluir
-              </button>
-              
-              <button type="button" class="btn btn-outline-primary btn-sm" 
-                      data-bs-toggle="modal" data-bs-target="#modalSobre"
-                      (click)="verDetalhes(item)">
-                Sobre
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white p-3">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> Gerenciar Funcionários</h5>
+    </div>
 
-</div>
-
-<div class="modal fade" id="modalFuncionario" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">{{ idEdicao ? 'Editar Funcionário' : 'Novo Funcionário' }}</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label class="form-label">Nome</label>
-            <input type="text" class="form-control" [(ngModel)]="novoFunc.nome" name="nome">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">CPF</label>
-            <input type="text" class="form-control" [(ngModel)]="novoFunc.cpf" name="cpf">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Telefone</label>
-            <input type="text" class="form-control" [(ngModel)]="novoFunc.telefone" name="tel">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Nascimento</label>
-            <input type="date" class="form-control" [(ngModel)]="novoFunc.nascimento" name="nasc">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Cargo (ID)</label>
-            <input type="number" class="form-control" [(ngModel)]="novoFunc.cargo" name="cargo">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" (click)="salvar()">Salvar</button>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-4">Nome</th>
+              <th scope="col">Cargo</th>
+              <th scope="col">Telefone</th>
+              <th scope="col" class="text-center" style="width: 250px;">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of funcionarios">
+              <td class="ps-4 fw-bold text-secondary">{{ item.Nome }}</td>
+              
+              <td><span class="badge bg-secondary">{{ item.Cargo }}</span></td>
+              
+              <td>{{ item.contato | mask: '(00) 00000-0000' }}</td>
+              
+              <td class="text-center">
+                <div class="btn-group" role="group">
+                  <button class="btn btn-outline-secondary btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalFuncionario" 
+                          (click)="prepararEdicao(item)">
+                    <i class="bi bi-pencil"></i> Editar
+                  </button>
+                  
+                  <button class="btn btn-outline-danger btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalConfirmacao"
+                          (click)="apagar(item)">
+                    <i class="bi bi-trash"></i> Excluir
+                  </button>
+                  
+                  <button class="btn btn-outline-info btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalSobre" 
+                          (click)="verDetalhes(item)">
+                    <i class="bi bi-info-circle"></i> Sobre
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
+<div class="modal fade" id="modalFuncionario" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold">
+          {{ idEdicao ? 'Editar' : 'Novo' }} Funcionário
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Nome</label>
+            <input type="text" class="form-control" [(ngModel)]="novoFunc.nome" name="nome">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">CPF</label>
+            <input type="text" class="form-control" mask="000.000.000-00" [(ngModel)]="novoFunc.cpf" name="cpf">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Telefone</label>
+            <input type="text" class="form-control" mask="(00) 00000-0000" [(ngModel)]="novoFunc.telefone" name="tel">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Nascimento</label>
+            <input type="date" class="form-control" [(ngModel)]="novoFunc.nascimento" name="nasc">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Cargo</label>
+            <select class="form-select" [(ngModel)]="novoFunc.cargo" name="cargo">
+              <option value="" disabled selected>Selecione...</option>
+              <option *ngFor="let c of cargos" [value]="c.id_cargo">
+                {{ c.nome_cargo }}
+              </option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" id="btnFechar" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary px-4" (click)="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <p class="fs-5">Tem certeza que deseja apagar o funcionário:</p>
+        <h4 class="fw-bold text-danger">{{ itemParaExcluir?.Nome }}</h4>
+        <p class="text-muted small mt-3">Essa ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer bg-light justify-content-center">
+        <button type="button" id="btnFecharConfirmacao" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger px-4" (click)="confirmarExclusao()">Sim, Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalMensagem" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center border-0 shadow-lg">
+      <div class="modal-header justify-content-center text-white"
+           [ngClass]="{'bg-success': msgSucesso, 'bg-danger': msgErro}">
+        <h5 class="modal-title fw-bold">
+          <i class="bi" [ngClass]="{'bi-check-circle-fill': msgSucesso, 'bi-x-circle-fill': msgErro}"></i>
+          {{ msgSucesso ? 'Sucesso!' : 'Atenção!' }}
+        </h5>
+      </div>
+      <div class="modal-body p-4">
+        <h5 class="mb-0">{{ msgSucesso || msgErro }}</h5>
+      </div>
+      <div class="modal-footer justify-content-center bg-light">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="btnAbrirMensagem" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalMensagem"></button>
+
 <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
       <div class="modal-header bg-info text-white">
-        <h5 class="modal-title">Detalhes</h5>
+        <h5 class="modal-title fw-bold">Detalhes do Funcionário</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" *ngIf="funcionarioSelecionado">
         <ul class="list-group list-group-flush">
           <li class="list-group-item"><strong>Nome:</strong> {{ funcionarioSelecionado.Nome }}</li>
-          <li class="list-group-item"><strong>CPF:</strong> {{ funcionarioSelecionado.Cpf }}</li>
-          <li class="list-group-item"><strong>Cargo:</strong> {{ funcionarioSelecionado.Cargo }}</li>
-          <li class="list-group-item"><strong>Telefone:</strong> {{ funcionarioSelecionado.contato }}</li>
-          <li class="list-group-item"><strong>Aniversário:</strong> {{ funcionarioSelecionado.Aniversario }}</li>
+          <li class="list-group-item"><strong>CPF:</strong> {{ funcionarioSelecionado.Cpf | mask: '000.000.000-00' }}</li>
+          <li class="list-group-item"><strong>Cargo:</strong> <span class="badge bg-secondary">{{ funcionarioSelecionado.Cargo }}</span></li>
+          <li class="list-group-item"><strong>Telefone:</strong> {{ funcionarioSelecionado.contato | mask: '(00) 00000-0000' }}</li>
           <li class="list-group-item"><strong>Salário:</strong> R$ {{ funcionarioSelecionado.Salario }}</li>
         </ul>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>

@@ -18,6 +18,11 @@ export class FuncionarioService {
     return this.http.get<any[]>(`${this.apiUrl}/listar`);
   }
 
+  // --- FUNÇÃO QUE ESTAVA FALTANDO (CARGOS) ---
+  getCargos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cargos`);
+  }
+
   adicionarFuncionario(funcionario: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, funcionario);
   }
@@ -30,8 +35,5 @@ export class FuncionarioService {
     return this.http.delete(`${this.apiUrl}/apagar/${id}`);
   }
 
-  // --- FUNÇÃO QUE ESTAVA FALTANDO (CARGOS) ---
-  getCargos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/cargos`);
-  }
+  
 }

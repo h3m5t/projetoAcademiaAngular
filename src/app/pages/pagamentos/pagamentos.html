@@ -1,4 +1,5 @@
 <div class="container mt-5">
+  
   <div class="card shadow-lg border-0">
     
     <div class="card-header bg-primary text-white p-3">
@@ -8,8 +9,12 @@
         </h5>
         
         <div class="input-group" style="width: 300px;">
-          <input type="text" class="form-control form-control-sm" placeholder="Pesquisar Pagante..." [(ngModel)]="termoBusca" (input)="filtrar()">
-          <span class="input-group-text bg-white text-primary"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control form-control-sm" 
+                 placeholder="Pesquisar Pagante..." 
+                 [(ngModel)]="termoBusca" (input)="filtrar()">
+          <span class="input-group-text bg-white text-primary">
+            <i class="bi bi-search"></i>
+          </span>
         </div>
       </div>
     </div>
@@ -31,11 +36,18 @@
             <tr *ngFor="let item of pagantes">
               <td class="ps-4 fw-bold text-secondary">{{ item.nome }}</td>
               <td class="text-center">
-                <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalAdd" (click)="prepararNovoPagamento(item)" title="Pagar">
+                
+                <button class="btn btn-success btn-sm me-2" 
+                        data-bs-toggle="modal" data-bs-target="#modalAdd" 
+                        (click)="prepararNovoPagamento(item)" 
+                        title="Pagar">
                   <i class="bi bi-currency-dollar"></i> Pagar
                 </button>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalHistorico" (click)="verHistorico(item)">
-                  Ver Detalhes
+                
+                <button class="btn btn-primary btn-sm" 
+                        data-bs-toggle="modal" data-bs-target="#modalHistorico" 
+                        (click)="verHistorico(item)">
+                  <i class="bi bi-clock-history"></i> Histórico
                 </button>
               </td>
             </tr>
@@ -48,9 +60,9 @@
 
 <div class="modal fade" id="modalAdd" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content border-0 shadow">
       <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">Novo Pagamento {{ clienteSelecionado?.nome }}</h5>
+        <h5 class="modal-title">Novo Pagamento: {{ clienteSelecionado?.nome }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       
@@ -88,7 +100,7 @@
       </div>
 
       <div class="modal-footer bg-light">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnFechar" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-success px-4" (click)="salvarPagamento()">Confirmar</button>
       </div>
     </div>
@@ -97,7 +109,7 @@
 
 <div class="modal fade" id="modalHistorico" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content border-0 shadow">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Histórico: {{ clienteSelecionado?.nome }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -114,8 +126,10 @@
             <thead class="table-light">
               <tr>
                 <th>Data</th>
-                <th>Tipo</th> <th>Forma</th>
+                <th>Tipo</th>
+                <th>Forma</th>
                 <th>Valor Pago</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -124,6 +138,13 @@
                 <td><span class="badge bg-info text-dark">{{ pag.plano }}</span></td>
                 <td>{{ pag.forma }}</td>
                 <td class="text-success fw-bold">R$ {{ pag.valor }}</td>
+                <td>
+                  <button class="btn btn-outline-danger btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalConfirmacaoPag"
+                          (click)="confirmarExclusaoPagamento(pag)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -136,3 +157,43 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modalConfirmacaoPag" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h6 class="modal-title fw-bold">Apagar Pagamento?</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <p class="mb-0">Deseja remover o registro de R$ {{ pagamentoParaExcluir?.valor }}?</p>
+      </div>
+      <div class="modal-footer justify-content-center bg-light p-2">
+        <button type="button" id="btnFecharConfirmacao" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="apagarPagamentoReal()">Sim, Remover</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalMensagem" tabindex="-1" aria-hidden="true" style="z-index: 1070;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center border-0 shadow-lg">
+      <div class="modal-header justify-content-center text-white"
+           [ngClass]="{'bg-success': msgSucesso, 'bg-danger': msgErro}">
+        <h5 class="modal-title fw-bold">
+          <i class="bi" [ngClass]="{'bi-check-circle-fill': msgSucesso, 'bi-x-circle-fill': msgErro}"></i>
+          {{ msgSucesso ? 'Sucesso!' : 'Atenção!' }}
+        </h5>
+      </div>
+      <div class="modal-body p-4">
+        <h5 class="mb-0">{{ msgSucesso || msgErro }}</h5>
+      </div>
+      <div class="modal-footer justify-content-center bg-light">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="btnAbrirMensagem" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalMensagem"></button>

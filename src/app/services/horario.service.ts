@@ -26,4 +26,8 @@ export class HorarioService {
   adicionarHorario(dados: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, dados);
   }
+
+  excluirHorario(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/apagar/${id}`);
+  }
 }

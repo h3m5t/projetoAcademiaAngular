@@ -3,18 +3,22 @@ import { FuncionarioService } from '../../services/funcionario.service';
 
 @Component({
   selector: 'app-funcionarios',
-  templateUrl: './funcionarios.html',
   standalone: false,
+  templateUrl: './funcionarios.html',
   styleUrls: ['./funcionarios.css']
 })
-export class Funcionarios implements OnInit { // Note que mantive o nome 'Funcionarios'
+export class Funcionarios implements OnInit {
 
   funcionarios: any[] = [];
+  cargos: any[] = [];
   
-  // AQUI ESTÁ A CORREÇÃO: Criamos a lista de cargos
-  cargos: any[] = []; 
+  // Variáveis para mensagens
+  msgSucesso: string = '';
+  msgErro: string = '';
 
-  funcionarioSelecionado: any = null;
+  // Controles
+  funcionarioSelecionado: any = null; // Para o "Sobre"
+  itemParaExcluir: any = null;        // Para o "Excluir" (NOVO)
   idEdicao: number | null = null;
 
   novoFunc = {
@@ -29,39 +33,43 @@ export class Funcionarios implements OnInit { // Note que mantive o nome 'Funcio
 
   ngOnInit(): void {
     this.carregarFuncionarios();
-    this.carregarCargos(); // Chama a função ao abrir a tela
+    this.carregarCargos();
+  }
+
+  limparMensagens() {
+    this.msgSucesso = '';
+    this.msgErro = '';
+  }
+
+  // Abre o modal de feedback (sucesso/erro)
+  abrirModalMensagem() {
+    setTimeout(() => {
+      document.getElementById('btnAbrirMensagem')?.click();
+    }, 300);
   }
 
   carregarFuncionarios() {
     this.funcionarioService.getFuncionarios().subscribe(
       (dados) => { this.funcionarios = dados; },
-      (erro) => console.error('Erro ao carregar lista:', erro)
+      (erro) => console.error(erro)
     );
   }
 
-  // Função que busca os cargos no Banco de Dados
   carregarCargos() {
     this.funcionarioService.getCargos().subscribe(
-      (dados) => { 
-        console.log('Cargos carregados:', dados); // Para você conferir no F12
-        this.cargos = dados; 
-      },
-      (erro) => console.error('Erro ao carregar cargos:', erro)
+      (dados) => { this.cargos = dados; },
+      (erro) => console.error(erro)
     );
   }
 
   prepararCadastro() {
+    this.limparMensagens();
     this.idEdicao = null;
-    this.novoFunc = { 
-      nome: '', 
-      cpf: '', 
-      telefone: '', 
-      nascimento: '', 
-      cargo: 1 
-    };
+    this.novoFunc = { nome: '', cpf: '', telefone: '', nascimento: '', cargo: 1 };
   }
 
   prepararEdicao(item: any) {
+    this.limparMensagens();
     this.idEdicao = item.Matricula;
     
     let dataFormatada = '';
@@ -77,38 +85,69 @@ export class Funcionarios implements OnInit { // Note que mantive o nome 'Funcio
       cpf: item.Cpf,
       telefone: item.contato,
       nascimento: dataFormatada,
-      cargo: 1 // Aqui você pode ajustar depois para puxar o ID do cargo se tiver
+      cargo: 1 
     };
   }
 
   salvar() {
+    this.limparMensagens();
+
+    const aoSucesso = (msg: string) => {
+      this.msgSucesso = msg;
+      this.carregarFuncionarios();
+      document.getElementById('btnFechar')?.click(); // Fecha modal de cadastro
+      this.abrirModalMensagem(); // Abre feedback
+      
+      if (!this.idEdicao) {
+        this.novoFunc = { nome: '', cpf: '', telefone: '', nascimento: '', cargo: 1 };
+      }
+    };
+
+    const aoErro = (msg: string, erro: any) => {
+      console.error(erro);
+      this.msgErro = msg;
+      this.abrirModalMensagem();
+    };
+
     if (this.idEdicao) {
       this.funcionarioService.editarFuncionario(this.idEdicao, this.novoFunc).subscribe(
-        () => {
-          alert('Funcionário atualizado!');
-          this.carregarFuncionarios();
-        },
-        (erro) => alert('Erro ao editar.')
+        () => aoSucesso('Funcionário atualizado com sucesso!'),
+        (erro) => aoErro('Erro ao atualizar funcionário.', erro)
       );
     } else {
       this.funcionarioService.adicionarFuncionario(this.novoFunc).subscribe(
-        () => {
-          alert('Funcionário salvo!');
-          this.carregarFuncionarios();
-        },
-        (erro) => alert('Erro ao salvar.')
+        () => aoSucesso('Funcionário cadastrado com sucesso!'),
+        (erro) => aoErro('Erro ao cadastrar funcionário.', erro)
       );
     }
   }
 
+  // 1. O botão da tabela chama ISSO AQUI agora
   apagar(item: any) {
-    if (confirm(`Tem certeza que deseja apagar ${item.Nome}?`)) {
-      this.funcionarioService.excluirFuncionario(item.Matricula).subscribe(
+    this.limparMensagens();
+    this.itemParaExcluir = item; // Guarda quem vai ser excluído
+    // O modal abre automaticamente pelo data-bs-target no HTML
+  }
+
+  // 2. O botão "Sim, Excluir" do modal chama ISSO AQUI
+  confirmarExclusao() {
+    if (this.itemParaExcluir) {
+      this.funcionarioService.excluirFuncionario(this.itemParaExcluir.Matricula).subscribe(
         () => {
-          alert('Excluído com sucesso!');
+          this.msgSucesso = 'Funcionário excluído com sucesso!';
           this.carregarFuncionarios();
+          
+          // Fecha o modal de confirmação
+          document.getElementById('btnFecharConfirmacao')?.click();
+          
+          // Abre o modal de sucesso
+          this.abrirModalMensagem();
         },
-        (erro) => alert('Erro ao excluir.')
+        (erro) => {
+          console.error(erro);
+          this.msgErro = 'Erro ao excluir funcionário.';
+          this.abrirModalMensagem();
+        }
       );
     }
   }

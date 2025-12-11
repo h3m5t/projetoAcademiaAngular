@@ -26,4 +26,8 @@ export class PagamentoService {
   adicionarPagamento(pagamento: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, pagamento);
   }
+
+  excluirPagamento(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/apagar/${id}`);
+  }
 }
