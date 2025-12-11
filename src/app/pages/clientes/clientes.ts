@@ -10,6 +10,12 @@ import { ClienteService } from '../../services/cliente.service';
 export class Clientes implements OnInit {
 
   clientes: any[] = [];
+  clienteSelecionado: any = null;
+  idEdicao: number | null = null;
+
+  // Variáveis de Mensagem (NOVO)
+  msgSucesso: string = '';
+  msgErro: string = '';
 
   novoCliente = {
     nome: '',
@@ -18,32 +24,37 @@ export class Clientes implements OnInit {
     nascimento: ''
   };
 
-  clienteSelecionado: any = null;
-  idEdicao: number | null = null;
-
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
     this.carregarClientes();
   }
 
+  limparMensagens() {
+    this.msgSucesso = '';
+    this.msgErro = '';
+  }
+
   carregarClientes() {
     this.clienteService.getClientes().subscribe(
       (dados) => { this.clientes = dados; },
-      (erro) => { console.error('Erro:', erro); }
+      (erro) => {
+        console.error('Erro:', erro);
+        this.msgErro = 'Erro ao carregar lista de clientes.';
+      }
     );
   }
 
   prepararCadastro() {
+    this.limparMensagens();
     this.idEdicao = null;
     this.novoCliente = { nome: '', cpf: '', telefone: '', nascimento: '' };
   }
 
   prepararEdicao(item: any) {
-    // ATENÇÃO: Agora usamos 'id' (minusculo e sem acento)
+    this.limparMensagens();
     this.idEdicao = item.id; 
 
-    // Formatar data
     let dataFormatada = '';
     if (item.aniversario) {
       const partes = item.aniversario.split('/');
@@ -55,43 +66,47 @@ export class Clientes implements OnInit {
     this.novoCliente = {
       nome: item.nome,
       cpf: item.cpf,
-      // ATENÇÃO: Agora usamos 'telefone' (que vem do backend novo)
       telefone: item.telefone, 
       nascimento: dataFormatada
     };
   }
 
   salvar() {
+    this.limparMensagens();
+
     if (this.idEdicao) {
       this.clienteService.editarCliente(this.idEdicao, this.novoCliente).subscribe(
         () => {
-          alert('Atualizado!');
+          this.msgSucesso = 'Cliente atualizado com sucesso!';
           this.carregarClientes();
-          this.prepararCadastro();
+          // FECHA O MODAL AUTOMATICAMENTE
+          document.getElementById('btnFechar')?.click(); 
         },
-        (erro) => alert('Erro ao editar.')
+        (erro) => this.msgErro = 'Erro ao atualizar cliente.'
       );
     } else {
       this.clienteService.adicionarCliente(this.novoCliente).subscribe(
         () => {
-          alert('Salvo!');
+          this.msgSucesso = 'Cliente cadastrado com sucesso!';
           this.carregarClientes();
           this.prepararCadastro();
+          // FECHA O MODAL AUTOMATICAMENTE
+          document.getElementById('btnFechar')?.click(); 
         },
-        (erro) => alert('Erro ao salvar.')
+        (erro) => this.msgErro = 'Erro ao cadastrar cliente.'
       );
     }
   }
 
   apagar(item: any) {
-    if (confirm(`Excluir ${item.nome}?`)) {
-      // ATENÇÃO: Usando 'id' aqui também
+    this.limparMensagens();
+    if (confirm(`Tem certeza que deseja apagar ${item.nome}?`)) {
       this.clienteService.excluirCliente(item.id).subscribe(
         () => {
-          alert('Excluído!');
+          this.msgSucesso = 'Cliente excluído com sucesso!';
           this.carregarClientes();
         },
-        (erro) => alert('Erro ao excluir.')
+        (erro) => this.msgErro = 'Erro ao excluir cliente.'
       );
     }
   }

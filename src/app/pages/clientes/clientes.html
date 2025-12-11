@@ -1,33 +1,59 @@
 <div class="container mt-5">
-  <div class="card shadow-lg border-0">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center p-3">
-      <h5 class="mb-0 fw-bold">Gerenciar Clientes</h5>
-      <button class="btn btn-light text-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCliente" (click)="prepararCadastro()">
-        + Novo Cliente
-      </button>
+
+  <div *ngIf="msgSucesso" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i> {{ msgSucesso }}
+    <button type="button" class="btn-close" (click)="msgSucesso=''"></button>
+  </div>
+
+  <div *ngIf="msgErro" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ msgErro }}
+    <button type="button" class="btn-close" (click)="msgErro=''"></button>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCliente" (click)="prepararCadastro()">
+      <i class="bi bi-person-plus-fill me-2"></i> Novo Cliente
+    </button>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white p-3">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> Gerenciar Clientes</h5>
     </div>
 
     <div class="card-body p-0">
       <div class="table-responsive">
-        <table class="table table-hover table-striped align-middle mb-0">
+        <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
               <th scope="col" class="ps-4">Nome</th>
               <th scope="col">Telefone</th>
-              <th scope="col" class="text-center">Ações</th>
+              <th scope="col" class="text-center" style="width: 250px;">Ações</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of clientes">
-              <td class="ps-4">{{ item.nome }}</td>
+              <td class="ps-4 fw-bold text-secondary">{{ item.nome }}</td>
               
               <td>{{ item.telefone }}</td>
               
               <td class="text-center">
                 <div class="btn-group" role="group">
-                  <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCliente" (click)="prepararEdicao(item)">Editar</button>
-                  <button class="btn btn-outline-danger btn-sm" (click)="apagar(item)">Excluir</button>
-                  <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalSobre" (click)="verDetalhes(item)">Sobre</button>
+                  <button class="btn btn-outline-secondary btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalCliente" 
+                          (click)="prepararEdicao(item)">
+                    <i class="bi bi-pencil"></i> Editar
+                  </button>
+                  
+                  <button class="btn btn-outline-danger btn-sm" 
+                          (click)="apagar(item)">
+                    <i class="bi bi-trash"></i> Excluir
+                  </button>
+                  
+                  <button class="btn btn-outline-info btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalSobre" 
+                          (click)="verDetalhes(item)">
+                    <i class="bi bi-info-circle"></i> Sobre
+                  </button>
                 </div>
               </td>
             </tr>
@@ -39,46 +65,75 @@
 </div>
 
 <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">{{ idEdicao ? 'Editar' : 'Novo' }} Cliente</h5>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold">
+          {{ idEdicao ? 'Editar' : 'Novo' }} Cliente
+        </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form>
-          <div class="mb-3"><label>Nome</label><input type="text" class="form-control" [(ngModel)]="novoCliente.nome" name="nome"></div>
-          <div class="mb-3"><label>CPF</label><input type="text" class="form-control" [(ngModel)]="novoCliente.cpf" name="cpf"></div>
-          <div class="mb-3"><label>Telefone</label><input type="text" class="form-control" [(ngModel)]="novoCliente.telefone" name="tel"></div>
-          <div class="mb-3"><label>Nascimento</label><input type="date" class="form-control" [(ngModel)]="novoCliente.nascimento" name="nasc"></div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Nome</label>
+            <input type="text" class="form-control" [(ngModel)]="novoCliente.nome" name="nome">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">CPF</label>
+            <input type="text" class="form-control" [(ngModel)]="novoCliente.cpf" name="cpf">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Telefone</label>
+            <input type="text" class="form-control" [(ngModel)]="novoCliente.telefone" name="tel">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Nascimento</label>
+            <input type="date" class="form-control" [(ngModel)]="novoCliente.nascimento" name="nasc">
+          </div>
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-success" (click)="salvar()">Salvar</button>
+      <div class="modal-footer bg-light">
+        <button type="button" id="btnFechar" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success px-4" (click)="salvar()">Salvar</button>
       </div>
     </div>
   </div>
 </div>
 
 <div class="modal fade" id="modalSobre" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
       <div class="modal-header bg-info text-white">
-        <h5 class="modal-title">Detalhes</h5>
+        <h5 class="modal-title fw-bold">Detalhes do Cliente</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" *ngIf="clienteSelecionado">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>ID:</strong> {{ clienteSelecionado.id }}</li>
-          <li class="list-group-item"><strong>Nome:</strong> {{ clienteSelecionado.nome }}</li>
-          <li class="list-group-item"><strong>CPF:</strong> {{ clienteSelecionado.cpf }}</li>
-          <li class="list-group-item"><strong>Telefone:</strong> {{ clienteSelecionado.telefone }}</li>
-          <li class="list-group-item"><strong>Aniversário:</strong> {{ clienteSelecionado.aniversario }}</li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="fw-bold text-muted">ID:</span> 
+            <span class="badge bg-secondary">{{ clienteSelecionado.id }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="fw-bold text-muted">Nome:</span> 
+            <span>{{ clienteSelecionado.nome }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="fw-bold text-muted">CPF:</span> 
+            <span>{{ clienteSelecionado.cpf }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="fw-bold text-muted">Telefone:</span> 
+            <span>{{ clienteSelecionado.telefone }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span class="fw-bold text-muted">Aniversário:</span> 
+            <span>{{ clienteSelecionado.aniversario }}</span>
+          </li>
         </ul>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>

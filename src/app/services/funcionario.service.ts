@@ -3,34 +3,35 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class FuncionarioService {
 
-  // Aqui você coloca o endereço do seu backend (Node.js)
-  // Como você ainda vai configurar o backend para JSON, vamos deixar apontado:
-  private apiUrl = 'http://localhost:3000/funcionario/listar';
+  // URL base da API
+  private apiUrl = 'http://localhost:3000/funcionario';
 
   constructor(private http: HttpClient) { }
 
-  // Função que busca a lista de funcionários
+  // --- FUNÇÕES DE FUNCIONÁRIO ---
+
   getFuncionarios(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+    return this.http.get<any[]>(`${this.apiUrl}/listar`);
   }
 
-  // Adicione esse método dentro da classe do Service
   adicionarFuncionario(funcionario: any): Observable<any> {
-    // Ajuste a URL se a sua rota for diferente de /funcionario/add
-    return this.http.post('http://localhost:3000/funcionario/add', funcionario);
+    return this.http.post(`${this.apiUrl}/add`, funcionario);
   }
 
-  // Adicione dentro da classe do Service
-  excluirFuncionario(matricula: number): Observable<any> {
-    return this.http.delete(`http://localhost:3000/funcionario/apagar/${matricula}`);
+  editarFuncionario(id: number, funcionario: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/editar/${id}`, funcionario);
   }
 
-  editarFuncionario(matricula: number, dados: any): Observable<any> {
-    return this.http.put(`http://localhost:3000/funcionario/editar/${matricula}`, dados);
+  excluirFuncionario(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/apagar/${id}`);
   }
 
+  // --- FUNÇÃO QUE ESTAVA FALTANDO (CARGOS) ---
+  getCargos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cargos`);
+  }
 }

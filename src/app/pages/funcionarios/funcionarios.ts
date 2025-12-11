@@ -3,15 +3,20 @@ import { FuncionarioService } from '../../services/funcionario.service';
 
 @Component({
   selector: 'app-funcionarios',
-  standalone: false,
   templateUrl: './funcionarios.html',
+  standalone: false,
   styleUrls: ['./funcionarios.css']
 })
-export class Funcionarios implements OnInit {
+export class Funcionarios implements OnInit { // Note que mantive o nome 'Funcionarios'
 
   funcionarios: any[] = [];
+  
+  // AQUI ESTÁ A CORREÇÃO: Criamos a lista de cargos
+  cargos: any[] = []; 
 
-  // Objeto do formulário
+  funcionarioSelecionado: any = null;
+  idEdicao: number | null = null;
+
   novoFunc = {
     nome: '',
     cpf: '',
@@ -20,39 +25,50 @@ export class Funcionarios implements OnInit {
     cargo: 1
   };
 
-  // Variáveis de controle
-  funcionarioSelecionado: any = null; // Para o Modal "Sobre"
-  idEdicao: number | null = null;     // Se tiver valor, é Edição. Se for null, é Cadastro.
-
   constructor(private funcionarioService: FuncionarioService) { }
 
   ngOnInit(): void {
     this.carregarFuncionarios();
+    this.carregarCargos(); // Chama a função ao abrir a tela
   }
 
   carregarFuncionarios() {
     this.funcionarioService.getFuncionarios().subscribe(
       (dados) => { this.funcionarios = dados; },
-      (erro) => { console.error('Erro:', erro); }
+      (erro) => console.error('Erro ao carregar lista:', erro)
     );
   }
 
-  // BOTÃO ADICIONAR (Limpa o formulário)
-  prepararCadastro() {
-    this.idEdicao = null; // Garante que é modo criação
-    this.novoFunc = { nome: '', cpf: '', telefone: '', nascimento: '', cargo: 1 };
+  // Função que busca os cargos no Banco de Dados
+  carregarCargos() {
+    this.funcionarioService.getCargos().subscribe(
+      (dados) => { 
+        console.log('Cargos carregados:', dados); // Para você conferir no F12
+        this.cargos = dados; 
+      },
+      (erro) => console.error('Erro ao carregar cargos:', erro)
+    );
   }
 
-  // BOTÃO EDITAR (Preenche o formulário)
-  prepararEdicao(item: any) {
-    this.idEdicao = item.Matricula; // Guarda o ID para usar no UPDATE
+  prepararCadastro() {
+    this.idEdicao = null;
+    this.novoFunc = { 
+      nome: '', 
+      cpf: '', 
+      telefone: '', 
+      nascimento: '', 
+      cargo: 1 
+    };
+  }
 
-    // TRUQUE DA DATA: O banco manda dd/mm/aaaa, o input date quer aaaa-mm-dd
+  prepararEdicao(item: any) {
+    this.idEdicao = item.Matricula;
+    
     let dataFormatada = '';
     if (item.Aniversario) {
-      const partes = item.Aniversario.split('/'); // Quebra 10/05/2000 em [10, 05, 2000]
+      const partes = item.Aniversario.split('/');
       if (partes.length === 3) {
-        dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`; // Monta 2000-05-10
+        dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
       }
     }
 
@@ -61,42 +77,32 @@ export class Funcionarios implements OnInit {
       cpf: item.Cpf,
       telefone: item.contato,
       nascimento: dataFormatada,
-      cargo: 1 // Idealmente viria do banco, mas deixamos 1 por enquanto
+      cargo: 1 // Aqui você pode ajustar depois para puxar o ID do cargo se tiver
     };
   }
 
-  // SALVAR (Decide se cria ou edita)
   salvar() {
     if (this.idEdicao) {
-      // MODO EDIÇÃO
       this.funcionarioService.editarFuncionario(this.idEdicao, this.novoFunc).subscribe(
         () => {
           alert('Funcionário atualizado!');
           this.carregarFuncionarios();
-          // Fechar modal via código seria ideal aqui, mas o alert pausa a tela
-          this.prepararCadastro(); // Limpa form
         },
         (erro) => alert('Erro ao editar.')
       );
     } else {
-      // MODO CADASTRO
       this.funcionarioService.adicionarFuncionario(this.novoFunc).subscribe(
         () => {
-          alert('Funcionário cadastrado!');
+          alert('Funcionário salvo!');
           this.carregarFuncionarios();
-          this.prepararCadastro(); // Limpa form
         },
         (erro) => alert('Erro ao salvar.')
       );
     }
   }
 
-  verDetalhes(funcionario: any) {
-    this.funcionarioSelecionado = funcionario;
-  }
-
   apagar(item: any) {
-    if (confirm(`Tem certeza que deseja excluir ${item.Nome}?`)) {
+    if (confirm(`Tem certeza que deseja apagar ${item.Nome}?`)) {
       this.funcionarioService.excluirFuncionario(item.Matricula).subscribe(
         () => {
           alert('Excluído com sucesso!');
@@ -105,5 +111,9 @@ export class Funcionarios implements OnInit {
         (erro) => alert('Erro ao excluir.')
       );
     }
+  }
+
+  verDetalhes(item: any) {
+    this.funcionarioSelecionado = item;
   }
 }
