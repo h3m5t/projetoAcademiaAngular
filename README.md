@@ -19,7 +19,7 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 * **Linguagem:** TypeScript
 * **Estilização:** CSS / Angular Material
 
-## ⚙️ Pré-requisitos
+## Pré-requisitos
 
 1.  **Node.js** instalado (v22.x).
 2.  **Angular CLI** instalado globalmente:
@@ -50,6 +50,7 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 ---
 **Desenvolvido por:** [Seu Nome/Grupo] - Projeto da disciplina PPI/PDS.
+
 
 
 
