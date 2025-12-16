@@ -4,10 +4,10 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 ## ✨ Funcionalidades
 
-**Gestão de Clientes:** Cadastro, listagem e edição de alunos com validação de dados.
-**Gestão de Funcionários:** Controle completo da equipe, incluindo instrutores e recepcionistas.
-**Controle Financeiro:** Visualização e registro de pagamentos (Mensal, Anual, Diária).
-**Escala de Horários:** Visualização da grade de horários dos funcionários.
+* **Gestão de Clientes:** Cadastro, listagem e edição de alunos com validação de dados.
+* **Gestão de Funcionários:** Controle completo da equipe, incluindo instrutores e recepcionistas.
+* **Controle Financeiro:** Visualização e registro de pagamentos (Mensal, Anual, Diária).
+* **Escala de Horários:** Visualização da grade de horários dos funcionários.
 
 ## ⚠️ Limitações Conhecidas (Regras de Negócio)
 
@@ -52,4 +52,5 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 ---
 **Desenvolvido por:** [Seu Nome/Grupo] - Projeto da disciplina PPI/PDS.
+
 
