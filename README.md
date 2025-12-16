@@ -13,7 +13,7 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 * **Integridade de Dados (Exclusão):** O sistema possui travas de segurança no Banco de Dados (Foreign Keys). **Não é possível excluir um cliente** se ele possuir pagamentos ou treinos registrados. Isso garante que o histórico financeiro da academia nunca seja perdido acidentalmente.
 
-## ecnologias Utilizadas
+## Tecnologias Utilizadas
 
 * **Framework:** Angular CLI 20.0.2 
 * **Linguagem:** TypeScript
@@ -50,6 +50,7 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 ---
 **Desenvolvido por:** [Seu Nome/Grupo] - Projeto da disciplina PPI/PDS.
+
 
 
 
