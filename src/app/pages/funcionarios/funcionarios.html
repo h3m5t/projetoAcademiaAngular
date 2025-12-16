@@ -1,14 +1,19 @@
 <div class="container mt-5">
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalFuncionario" (click)="prepararCadastro()">
-      <i class="bi bi-person-plus-fill me-2"></i> Novo Funcionário
-    </button>
-  </div>
-
   <div class="card shadow-sm border-0">
-    <div class="card-header bg-primary text-white p-3">
-      <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> Gerenciar Funcionários</h5>
+    
+    <div class="card-header bg-white p-4 d-flex justify-content-between align-items-center border-bottom border-primary border-3">
+      
+      <h4 class="mb-0 fw-bold text-secondary">
+        <i class="bi bi-people-fill me-2"></i> Gerenciar Funcionários
+      </h4>
+
+      <button class="btn btn-warning shadow-sm px-4 fw-bold text-secondary" 
+              data-bs-toggle="modal" data-bs-target="#modalFuncionario" 
+              (click)="prepararCadastro()">
+        <i class="bi bi-plus-lg me-2"></i> Adicionar
+      </button>
+
     </div>
 
     <div class="card-body p-0">
@@ -32,6 +37,13 @@
               
               <td class="text-center">
                 <div class="btn-group" role="group">
+                  
+                  <button class="btn btn-outline-info btn-sm" 
+                          data-bs-toggle="modal" data-bs-target="#modalSobre" 
+                          (click)="verDetalhes(item)">
+                    <i class="bi bi-info-circle"></i> Sobre
+                  </button>
+
                   <button class="btn btn-outline-secondary btn-sm" 
                           data-bs-toggle="modal" data-bs-target="#modalFuncionario" 
                           (click)="prepararEdicao(item)">
@@ -44,11 +56,6 @@
                     <i class="bi bi-trash"></i> Excluir
                   </button>
                   
-                  <button class="btn btn-outline-info btn-sm" 
-                          data-bs-toggle="modal" data-bs-target="#modalSobre" 
-                          (click)="verDetalhes(item)">
-                    <i class="bi bi-info-circle"></i> Sobre
-                  </button>
                 </div>
               </td>
             </tr>
@@ -74,22 +81,30 @@
             <label class="form-label fw-bold small text-muted">Nome</label>
             <input type="text" class="form-control" [(ngModel)]="novoFunc.nome" name="nome">
           </div>
+          
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">CPF</label>
-            <input type="text" class="form-control" mask="000.000.000-00" [(ngModel)]="novoFunc.cpf" name="cpf">
+            <input type="text" class="form-control" 
+                   mask="000.000.000-00" placeholder="000.000.000-00"
+                   [(ngModel)]="novoFunc.cpf" name="cpf">
           </div>
+          
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">Telefone</label>
-            <input type="text" class="form-control" mask="(00) 00000-0000" [(ngModel)]="novoFunc.telefone" name="tel">
+            <input type="text" class="form-control" 
+                   mask="(00) 00000-0000" placeholder="(00) 00000-0000"
+                   [(ngModel)]="novoFunc.telefone" name="tel">
           </div>
+          
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">Nascimento</label>
             <input type="date" class="form-control" [(ngModel)]="novoFunc.nascimento" name="nasc">
           </div>
+          
           <div class="mb-3">
             <label class="form-label fw-bold small text-muted">Cargo</label>
             <select class="form-select" [(ngModel)]="novoFunc.cargo" name="cargo">
-              <option value="" disabled selected>Selecione...</option>
+              <option value="" disabled selected>Selecione um cargo...</option>
               <option *ngFor="let c of cargos" [value]="c.id_cargo">
                 {{ c.nome_cargo }}
               </option>

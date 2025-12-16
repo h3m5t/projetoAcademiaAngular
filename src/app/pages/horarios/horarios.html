@@ -1,46 +1,62 @@
 <div class="container mt-5">
-  
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary fw-bold"><i class="bi bi-calendar-week me-2"></i> Escala de Horários</h2>
-    <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalHorario" (click)="prepararNovoHorario()">
-      <i class="bi bi-plus-lg me-2"></i> Novo Horário
-    </button>
-  </div>
 
-  <div class="row">
-    
-    <div *ngIf="listaHorarios.length === 0" class="col-12">
-      <div class="alert alert-light text-center border shadow-sm py-5">
-        <h4 class="text-muted">Nenhum horário cadastrado.</h4>
-        <p>Clique em "Novo Horário" para começar a montar a escala.</p>
-      </div>
+  <div class="card shadow-sm border-0">
+
+    <div
+      class="card-header bg-white p-4 d-flex justify-content-between align-items-center border-bottom border-primary border-3">
+
+      <h4 class="mb-0 fw-bold text-secondary">
+        <i class="bi bi-calendar-week me-2"></i> Escala de Horários dos Funcionários
+      </h4>
+
+      <button class="btn btn-warning shadow-sm px-4 fw-bold text-secondary" data-bs-toggle="modal"
+        data-bs-target="#modalHorario" (click)="prepararNovoHorario()">
+        <i class="bi bi-plus-lg me-2"></i> Adicionar
+      </button>
+
     </div>
 
-    <div class="col-md-4 mb-4" *ngFor="let item of listaHorarios">
-      <div class="card shadow-sm h-100 border-0">
-        <div class="card-header bg-dark text-white text-center py-3">
-          <h5 class="mb-0 fw-bold">{{ item.nome }}</h5>
-        </div>
-        <div class="card-body p-0">
-          <ul class="list-group list-group-flush">
-            
-            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3" *ngFor="let turno of item.turnos">
-              <div>
-                <span class="fw-bold text-secondary d-block">{{ turno.dia }}</span>
-                <span class="badge bg-primary rounded-pill">
-                  {{ turno.inicio }} - {{ turno.fim }}
-                </span>
-              </div>
+    <div class="card-body p-4 bg-light">
 
-              <button class="btn btn-link text-danger p-0" 
-                      data-bs-toggle="modal" data-bs-target="#modalConfirmacaoHorario"
-                      (click)="apagarHorario(turno)">
-                <i class="bi bi-trash fs-5"></i>
-              </button>
-            </li>
+      <div class="row">
 
-          </ul>
+        <div *ngIf="listaHorarios.length === 0" class="col-12">
+          <div class="alert alert-white text-center border shadow-sm py-5">
+            <h4 class="text-muted">Nenhum horário cadastrado.</h4>
+            <p class="text-secondary">Clique em "Novo Horário" para começar a montar a escala.</p>
+          </div>
         </div>
+
+        <div class="col-md-4 mb-4" *ngFor="let item of listaHorarios">
+          <div class="card shadow-sm h-100 border-0">
+
+            <div class="card-header bg-dark text-white text-center py-3">
+              <h5 class="mb-0 fw-bold">{{ item.nome }}</h5>
+            </div>
+
+            <div class="card-body p-0">
+              <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3"
+                  *ngFor="let turno of item.turnos">
+                  <div>
+                    <span class="fw-bold text-secondary d-block">{{ turno.dia }}</span>
+                    <span class="badge bg-primary rounded-pill shadow-sm">
+                      {{ turno.inicio }} - {{ turno.fim }}
+                    </span>
+                  </div>
+
+                  <button class="btn btn-link text-danger p-0" data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacaoHorario" (click)="apagarHorario(turno)" title="Remover Horário">
+                    <i class="bi bi-trash fs-5"></i>
+                  </button>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -108,7 +124,8 @@
         <p class="fs-5 mb-0">Tem certeza que deseja remover este horário?</p>
       </div>
       <div class="modal-footer justify-content-center bg-light">
-        <button type="button" id="btnFecharConfirmacao" class="btn btn-secondary px-4" data-bs-dismiss="modal">Não</button>
+        <button type="button" id="btnFecharConfirmacao" class="btn btn-secondary px-4"
+          data-bs-dismiss="modal">Não</button>
         <button type="button" class="btn btn-danger px-4" (click)="confirmarExclusao()">Sim, Remover</button>
       </div>
     </div>
@@ -119,7 +136,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-center border-0 shadow-lg">
       <div class="modal-header justify-content-center text-white"
-           [ngClass]="{'bg-success': msgSucesso, 'bg-danger': msgErro}">
+        [ngClass]="{'bg-success': msgSucesso, 'bg-danger': msgErro}">
         <h5 class="modal-title fw-bold">
           <i class="bi" [ngClass]="{'bi-check-circle-fill': msgSucesso, 'bi-x-circle-fill': msgErro}"></i>
           {{ msgSucesso ? 'Sucesso!' : 'Atenção!' }}
@@ -135,4 +152,5 @@
   </div>
 </div>
 
-<button id="btnAbrirMensagem" type="button" class="d-none" data-bs-toggle="modal" data-bs-target="#modalMensagem"></button>
+<button id="btnAbrirMensagem" type="button" class="d-none" data-bs-toggle="modal"
+  data-bs-target="#modalMensagem"></button>
