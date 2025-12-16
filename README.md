@@ -1,13 +1,13 @@
 # 💻 Projeto Academia - Front-end (Angular)
 
-Interface web moderna para o sistema de administração da Academia "Titanium". [cite_start]Desenvolvido em **Angular v20**, o projeto oferece uma experiência fluida para gerenciar funcionários, clientes e pagamentos[cite: 1, 18].
+Interface web moderna para o sistema de administração da Academia "Titanium". Desenvolvido em **Angular v20**, o projeto oferece uma experiência fluida para gerenciar funcionários, clientes e pagamentos.
 
 ## ✨ Funcionalidades
 
-* [cite_start]**👥 Gestão de Clientes:** Cadastro, listagem e edição de alunos com validação de dados[cite: 23].
-* [cite_start]**💪 Gestão de Funcionários:** Controle completo da equipe, incluindo instrutores e recepcionistas[cite: 24].
-* [cite_start]**💰 Controle Financeiro:** Visualização e registro de pagamentos (Mensal, Anual, Diária)[cite: 158, 162].
-* [cite_start]**📅 Escala de Horários:** Visualização da grade de horários dos funcionários[cite: 416].
+**Gestão de Clientes:** Cadastro, listagem e edição de alunos com validação de dados.
+**Gestão de Funcionários:** Controle completo da equipe, incluindo instrutores e recepcionistas.
+**Controle Financeiro:** Visualização e registro de pagamentos (Mensal, Anual, Diária).
+**Escala de Horários:** Visualização da grade de horários dos funcionários.
 
 ## ⚠️ Limitações Conhecidas (Regras de Negócio)
 
@@ -52,3 +52,4 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 
 ---
 **Desenvolvido por:** [Seu Nome/Grupo] - Projeto da disciplina PPI/PDS.
+
