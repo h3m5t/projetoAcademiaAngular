@@ -49,7 +49,8 @@ Interface web moderna para o sistema de administração da Academia "Titanium". 
 * `src/app/services`: Serviços responsáveis por conectar com o Back-end (API).
 
 ---
-**Desenvolvido por:** [Seu Nome/Grupo] - Projeto da disciplina PPI/PDS.
+
+
 
 
 
